@@ -62,7 +62,8 @@ const Upload = () => {
         data.feedback = JSON.parse(feedbackText);
         await kv.set(`resume:${uuid}`, JSON.stringify(data));
         setStatusText('Analysis complete, redirecting...');
-        console.log(data);
+        console.log("Navigating to:", `/resume/${uuid}`, data);
+        navigate(`/resume/${uuid}`, { replace: true });
     }
 
     const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
@@ -90,6 +91,14 @@ const Upload = () => {
                     {isProcessing ? (
                         <>
                             <h2>{statusText}</h2>
+                            {statusText.includes('redirecting') && (
+                                <button
+                                    onClick={() => window.location.href = `/resume/${statusText.split('...')[1] || ''}`} // Fallback mostly
+                                    className="text-blue-600 underline text-sm cursor-pointer hover:text-blue-800"
+                                >
+                                    Click here if not redirected
+                                </button>
+                            )}
                             <img src="/images/resume-scan.gif" className="w-full" />
                         </>
                     ) : (
